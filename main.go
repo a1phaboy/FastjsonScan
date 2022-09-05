@@ -10,15 +10,15 @@ import (
 // ./FastjsonScan -u http://test.a1phaboy.tech/api/post -o result.txt
 // ./FastjsonScan -f targets.txt
 func main() {
-	console.Banner()
+	Console.Banner()
 	var options Utils.Option
 	flag.StringVar(&options.Url,"u","","url")
 	flag.StringVar(&options.Targets,"f","","targets file . for example: -f targets.txt")
 	flag.StringVar(&options.Result,"o","","results output file. for example: -o result.txt")
 	flag.Parse()
 	if options.Url == "" && options.Targets == ""{
-		console.Opts()
+		Console.Opts()
 		return
 	}
-	console.Start(options)
+	Console.Start(options)
 }

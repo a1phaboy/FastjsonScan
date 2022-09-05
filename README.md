@@ -8,7 +8,7 @@ A tool to fast detect fastjson‘s deserialize vuln
 FastjsonExpFramework一共分为探测、利用、混淆、bypass JDK等多个模块，而FastjsonScan 是其中一部分，通过报错、请求、依赖库等探测实现多方面定位fastjson版本  
 
 ### WHY?
-现有的fastjson扫描器无法满足迭代速度如此快的版本，大部分扫描器早已无人维护，已不适配高版本。我将持续优化此系列项目。
+现有的fastjson扫描器无法满足迭代速度如此快的fastjson版本，大部分扫描器早已无人维护，已不适配高版本。我将持续优化此系列项目。
 
 ### HOW?
 目前fastjsonScan支持  
@@ -80,5 +80,5 @@ https://github.com/hosch3n/FastjsonVulns
 
 ## 0x03鸣谢
 非常感谢 [blue](https://github.com/iSafeBlue) 浅蓝师傅在kcon上的精彩分享  
-非常感谢 [hosch3n](https://github.com/hosch3n) 陈师傅的解惑
+非常感谢 [hosch3n](https://github.com/hosch3n) 陈师傅的答疑解惑
 
