@@ -34,7 +34,7 @@ FastjsonExpFramework一共分为探测、利用、混淆、bypass JDK等多个�
 **FastjsonScan [-u] url [-f] urls.txt [-o] result.txt**  
 -u 目标url，注意需要加上http/https  
 -f 目标url文件，可以扫描多条url  
--o 结果保存文件，默认在当前文件夹下的results.txt文件
+-o 结果保存文件，默认在当前文件夹下的results.txt文件  
 
 ## 0x01 Dev Notes 
 

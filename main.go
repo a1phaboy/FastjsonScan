@@ -20,5 +20,5 @@ func main() {
 		Console.Opts()
 		return
 	}
-	Console.Start(options)
+	//Console.Start(options)
 }

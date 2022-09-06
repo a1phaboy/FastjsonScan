@@ -13,12 +13,12 @@ import (
 
 func Opts(){
 fmt.Println(`Usage of ./FastjsonScan:
-  -f string
-        targets file . for example: -f targets.txt
-  -o string
-        results output file. for example: -o result.txt
-  -u string
-        url`)
+  -u url e.g: https://a1phaboy.tech/fastjson/post
+        
+  -f targets file . for example: -f targets.txt
+        
+  -o results output file. for example: -o result.txt
+`)
 }
 func Banner(){
 fmt.Println(`
@@ -28,6 +28,7 @@ fmt.Println(`
  |  _| (_| \__ \ |_ | \__ \ (_) | | | |___) | (_| (_| | | | |
  |_|  \__,_|___/\__|/ |___/\___/|_| |_|____/ \___\__,_|_| |_|
 	          |__/
+					 v1.0 by a1phaboy
 `)
 }
 
