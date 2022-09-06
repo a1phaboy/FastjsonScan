@@ -2,8 +2,8 @@ package Utils
 
 
 
-/** gsdgets.go
-*** payload模版 gadgets模版
+/** templates.go
+*** payload模版 results模版
 **/
 
 /* 报错检测 */
@@ -87,4 +87,17 @@ var DEPENDENCY_DETECT_BY_ERR = `
 		"@type":"java.lang.Class",
 		"val":"{{.Variables.Dependency}}"
 }
+`
+
+var RESULT_OUTPUT = `Scan Result
+Target: {{.Variables.Url}}
+[+] Fastjson 版本: {{.Variables.Version}}
+[+] 网络状态判断: {{.Variables.Netout}}
+[+] AutoType 状态: {{.Variables.Autotype}}
+[+] 依赖库信息:
+	{{range .Dependency}} 
+	{{.}}
+	{{end}}
+
+<---------------------------------------------->
 `

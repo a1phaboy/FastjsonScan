@@ -149,3 +149,35 @@ func DEPENDENCY_ERR_DETECT_FACTORY() map[string]string{
 	return payloads
 
 }
+
+func SCAN_RESULTS_OUTPUT_FACTORY(result Result) string{
+	var outputString string
+	var buffer bytes.Buffer
+	var outputStringTemplate = RESULT_OUTPUT
+	var net string
+	var autotype string
+	if result.Netout{
+		net = "可出网"
+	}else{
+		net = "不出网"
+	}
+	if result.AutoType {
+		autotype = "开启"
+	}else{
+		autotype = "未开启"
+	}
+	field := &ResultFomat{}
+	field.Variables = make(map[string]string)
+	field.Dependency = make([]string,len(result.Dependency))
+	field.Variables["Url"] = result.Url
+	field.Variables["Version"] = result.Version
+	field.Variables["Netout"] = net
+	field.Variables["Autotype"] = autotype
+	field.Dependency = result.Dependency
+	buffer.Reset()
+	resultTemplate ,_ := template.New("field").Parse(outputStringTemplate)
+	_ = resultTemplate.Execute(&buffer,field)
+	outputString  = buffer.String()
+	return outputString
+}
+

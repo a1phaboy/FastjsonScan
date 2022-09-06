@@ -16,8 +16,9 @@ import (
 ***	识别fastjson(主要通过报错回显的方式)
 **/
 
+
 func DetectFastjson(url string) (bool,string){
-	fmt.Println("[+] 正在进行报错识别")
+	fmt.Println("["+url+"] :"+"[+] 正在进行报错识别")
 	jsonType, _ := ErrDetectVersion(url)
 	if jsonType == "jackson" {
 		return false,Utils.NOT_FS
@@ -34,9 +35,9 @@ func DetectFastjson(url string) (bool,string){
 
 func DetectVersion(url string ) Utils.Result {
 	var result Utils.Result
+	Utils.InitResult(result)
 	fmt.Println("开始检测 "+url)
 	result.Url = url
-	//是否出网
 	var payloads Utils.DNSPayloads
 	isFastjson,jsonType := DetectFastjson(url)
 	if jsonType == "jackson" {
@@ -44,47 +45,54 @@ func DetectVersion(url string ) Utils.Result {
 		return result
 	}
 	//出网探测
-	fmt.Println("[+] 正在进行出网探测")
+	fmt.Println("["+result.Url+"] :"+"[+] 正在进行出网探测")
 	payload, session := Utils.NET_DETECT_FACTORY()
-	if DnslogDetect(url, payload, session) != "[]" {
-		//出网
-		fmt.Println("[*] 目标可出网")
-		result.Netout = true
-		result.Type = "Fastjson"
-		fmt.Println("[+] 正在进行 AutoType状态 探测")
-		result.AutoType = DetectAutoType(url)
-		result.Dependency = DetectDependency(url)
-		if isFastjson && jsonType != Utils.NOT_FS && jsonType != ""{
-			fmt.Println("[+] Fastjson版本为 "+jsonType)
-			result.Version = jsonType
-			return result
-		}
-		fmt.Println("[+] 正在进行版本探测")
-		payloads, session = Utils.DNS_DETECT_FACTORY()
-		if DnslogDetect(url, payloads.Dns_48, session) == "48" {
-			result.Version = Utils.FJ_UNDER_48
-			return result
-		}
-		if DnslogDetect(url, payloads.Dns_68, session) == "68" {
-			if result.AutoType{
-				result.Version = Utils.FJ_BEYOND_48
+	record := DnslogDetect(url, payload, session)
+	if record != "[]" {
+		if record != Utils.NETWORK_NOT_ACCESS {
+			//出网
+			fmt.Println("[" + result.Url + "] :" + "[*] 目标可出网")
+			result.Netout = true
+			result.Type = "Fastjson"
+			fmt.Println("[" + result.Url + "] :" + "[+] 正在进行 AutoType状态 探测")
+			result.AutoType = DetectAutoType(url)
+			result.Dependency = DetectDependency(url)
+			if isFastjson && jsonType != Utils.NOT_FS && jsonType != "" {
+				fmt.Println("[" + result.Url + "] :" + "[+] Fastjson版本为 " + jsonType)
+				result.Version = jsonType
 				return result
 			}
-			result.Version = Utils.FJ_BETWEEN_48_68
-			return result
+			fmt.Println("[" + result.Url + "] :" + "[+] 正在进行版本探测")
+			payloads, session = Utils.DNS_DETECT_FACTORY()
+			if DnslogDetect(url, payloads.Dns_48, session) == "48" {
+				result.Version = Utils.FJ_UNDER_48
+				return result
+			}
+			if DnslogDetect(url, payloads.Dns_68, session) == "68" {
+				if result.AutoType {
+					result.Version = Utils.FJ_BEYOND_48
+					return result
+				}
+				result.Version = Utils.FJ_BETWEEN_48_68
+				return result
+			}
+			if DnslogDetect(url, payloads.Dns_80, session) == "80" {
+				result.Version = Utils.FJ_BETWEEN_69_80
+				return result
+			}
+			if DnslogDetect(url, payloads.Dns_80, session) == "83" {
+				result.Version = Utils.FS_BEYOND_80
+				return result
+			}
+		}else{
+			fmt.Println("客户端与dnslog平台网络不可达")
+			//内网测试场景  施工中
 		}
-		if DnslogDetect(url, payloads.Dns_80, session) == "80" {
-			result.Version = Utils.FJ_BETWEEN_69_80
-			return result
-		}
-		if DnslogDetect(url, payloads.Dns_80, session) == "83" {
-			result.Version = Utils.FS_BEYOND_80
-			return result
-		}
+
 	} else {
 		//不出网
-		fmt.Println("[-] 目标不出网")
-		fmt.Println("[+] 正在进行延迟探测")
+		fmt.Println("["+result.Url+"] :"+"[-] 目标不出网")
+		fmt.Println("["+result.Url+"] :"+"[+] 正在进行延迟探测")
 		if TimeDelayCheck(url) {
 			result.Netout = false
 			result.Type = "Fastjson"
@@ -95,7 +103,7 @@ func DetectVersion(url string ) Utils.Result {
 		}
 	}
 
-	result.Type = ""
+	result.Type = jsonType
 	return result
 }
 
@@ -105,25 +113,25 @@ func DetectVersion(url string ) Utils.Result {
 **/
 
 func DetectDependency(target string)[]string{
-	fmt.Println("[+] 正在进行依赖库探测")
-	fmt.Println("[+] 正在进行报错探测")
-	var result []string
+	fmt.Println("["+target+"] :"+"[+] 正在进行依赖库探测")
+	fmt.Println("["+target+"] :"+"[+] 正在进行报错探测")
+	var results []string
 	findDependency := ErrDetectDependency(target,Utils.DEPENDENCY_ERR_DETECT_FACTORY())
 	//fmt.Println(findDependency)
 	if findDependency[0] == "" {
-		fmt.Println("[-] 报错探测未发现任何依赖库")
-		result[0] = ""
+		fmt.Println("["+target+"] :"+"[-] 报错探测未发现任何依赖库")
+		results[0] = ""
 	}else{
-		fmt.Println("[*] 发现依赖库如下")
+		fmt.Println("["+target+"] :"+"[*] 发现依赖库如下")
 		for dependency := range findDependency{
 			if findDependency[dependency] != "" {
 				fmt.Println(findDependency[dependency])
-				result = append(result,findDependency[dependency])
+				results = append(results,findDependency[dependency])
 			}
 
 		}
 	}
-	return result
+	return results
 }
 
 
@@ -134,16 +142,17 @@ func DetectDependency(target string)[]string{
 
 func DetectAutoType(url string) bool{
 	dnsurl,session := Utils.GetDnslogUrl()
-	var result bool
+	var autoTypeStatus bool
 	payload := Utils.AUTOTYPE_DETECT_FACTORY(dnsurl)
-	if DnslogDetect(url,payload,session) == "[]" {
-		fmt.Println("[-] 目标没有开启 AutoType")
-		result = false
+	record := DnslogDetect(url,payload,session)
+	if  record == "[]" || record == Utils.NETWORK_NOT_ACCESS{
+		fmt.Println("["+url+"] :"+"[-] 目标没有开启 AutoType")
+		autoTypeStatus = false
 	}else{
-		fmt.Println("[*] 目标开启了 AutoType ")
-		result = true
+		fmt.Println("["+url+"] :"+"[*] 目标开启了 AutoType ")
+		autoTypeStatus = true
 	}
-	return result
+	return autoTypeStatus
 }
 
 func DnslogDetect(target string,payload string,session string) string{
@@ -178,7 +187,11 @@ func ErrDetectVersion(target string) (string,bool){
 	httpReq.Header.Add("Content-Type", "application/json")
 	httpRsp, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		err.Error()
+		httpRsp = Utils.NetWorkErrHandle(http.DefaultClient,httpReq,err)
+		if httpRsp == nil{
+			fmt.Println("与"+target+"网络不可达,请检查网络")
+			return Utils.NETWORK_NOT_ACCESS,false
+		}
 	}
 	defer httpRsp.Body.Close()
 	body, err := ioutil.ReadAll(httpRsp.Body)
@@ -236,15 +249,15 @@ func TimeDelayCheck(url string) bool{
 	var count int
 	var start int64
 	var pos int64 = 0
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 6; i++ {
 		start = pos
-		payloads := Utils.TIME_DETECT_FACTORY(5)
+		payloads := Utils.TIME_DETECT_FACTORY(6)
 		pos = TimeGet(url,payloads[i])
 		if pos - start > 0{
 			count ++
 		}
 	}
-	if count > 3 {
+	if count > 4 {
 		return true
 	}
 	return false

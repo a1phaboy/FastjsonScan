@@ -39,6 +39,10 @@ func Start(options Utils.Option){
 		}(k,v,ch)
 	}
 	wg.Wait()
+	if options.Result != ""{
+		writeResults(options.Result,results)
+	}
+	fmt.Println(results)
 }
 
 func initTargetList(options Utils.Option,targets *[]string) {
@@ -65,6 +69,22 @@ func initTargetList(options Utils.Option,targets *[]string) {
 				return
 			}
 			*targets = append(*targets,line)
+		}
+	}
+}
+
+func writeResults(file string, results []Utils.Result ){
+	var f *os.File
+	var err error
+	f,err = os.Create(file)
+	if err != nil{
+		fmt.Println(err.Error())
+		return
+	}
+	for _,v := range results{
+		if v.Type == "Fastjson" {
+			info := Utils.SCAN_RESULTS_OUTPUT_FACTORY(v)
+			_, err = io.WriteString(f, info)
 		}
 	}
 }

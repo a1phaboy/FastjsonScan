@@ -1,6 +1,7 @@
 package Utils
 
 import (
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -20,8 +21,16 @@ func GetDnslogUrl()	(string,string){
 		err.Error()
 	}
 	req.Header.Add("Cookie","PHPSESSID="+session)
-	resp, _ := client.Do(req)
+	resp, err := client.Do(req)
+	if err != nil{
+		resp = NetWorkErrHandle(client,req,err)
+		if resp == nil{
+			fmt.Println("与dns平台网络不可达,请检查网络")
+			return NETWORK_NOT_ACCESS,""
+		}
+	}
 	domain, _ := ioutil.ReadAll(resp.Body)
+
 	return string(domain),session
 }
 
@@ -32,7 +41,14 @@ func GetDnslogRecord(PHPSESSID string) string{
 		err.Error()
 	}
 	req.Header.Add("Cookie","PHPSESSID=" + PHPSESSID)
-	resp, _ := client.Do(req)
+	resp, err := client.Do(req)
+	if err != nil{
+		resp = NetWorkErrHandle(client,req,err)
+		if resp == nil{
+			fmt.Println("与dns平台网络不可达,请检查网络")
+			return NETWORK_NOT_ACCESS
+		}
+	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	dns_48 := regexp.MustCompile(`48_.`)
 	dns_68 := regexp.MustCompile(`68_.`)
