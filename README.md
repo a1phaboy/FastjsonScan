@@ -86,6 +86,7 @@ AutoType的状态对版本探测有影响，需要做处理
 ## 0x02参考
 https://github.com/safe6Sec/Fastjson    
 https://github.com/hosch3n/FastjsonVulns   
+https://github.com/iSafeBlue/fastjson-autotype-bypass-demo  
 
 ## 0x03鸣谢
 非常感谢 [blue](https://github.com/iSafeBlue) 浅蓝师傅在kcon上的精彩分享  
