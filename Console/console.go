@@ -21,14 +21,21 @@ fmt.Println(`Usage of ./FastjsonScan:
         url`)
 }
 func Banner(){
-
+fmt.Println(`
+  _____         _    _                 ____                  
+ |  ___|_ _ ___| |_ (_)___  ___  _ __ / ___|  ___ __ _ _ __  
+ | |_ / _' / __| __|| / __|/ _ \| '_ \\___ \ / __/ _' | '_ \
+ |  _| (_| \__ \ |_ | \__ \ (_) | | | |___) | (_| (_| | | | |
+ |_|  \__,_|___/\__|/ |___/\___/|_| |_|____/ \___\__,_|_| |_|
+	          |__/
+`)
 }
 
 func Start(options Utils.Option){
 	var ch chan string
 	var targets []string
 	initTargetList(options,&targets)
-	fmt.Println(targets)
+	//fmt.Println(targets)
 	var results = make([]Utils.Result,len(targets))
 	var wg sync.WaitGroup
 	wg.Add(len(targets))
@@ -39,10 +46,10 @@ func Start(options Utils.Option){
 		}(k,v,ch)
 	}
 	wg.Wait()
-	if options.Result != ""{
-		writeResults(options.Result,results)
-	}
-	fmt.Println(results)
+
+	writeResults(options.Result,results)
+
+	//fmt.Println(results)
 }
 
 func initTargetList(options Utils.Option,targets *[]string) {

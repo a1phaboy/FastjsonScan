@@ -14,7 +14,7 @@ func main() {
 	var options Utils.Option
 	flag.StringVar(&options.Url,"u","","url")
 	flag.StringVar(&options.Targets,"f","","targets file . for example: -f targets.txt")
-	flag.StringVar(&options.Result,"o","","results output file. for example: -o result.txt")
+	flag.StringVar(&options.Result,"o","result.txt","results output file. for example: -o result.txt")
 	flag.Parse()
 	if options.Url == "" && options.Targets == ""{
 		Console.Opts()
