@@ -30,6 +30,9 @@ FastjsonExpFramework一共分为探测、利用、混淆、bypass JDK等多个�
 
 ### 如果在使用过程中有任何问题欢迎提出issues👏
 
+### Demo
+![img.png](img.png)![img_1.png](img_1.png)
+
 ## Usage
 **FastjsonScan [-u] url [-f] urls.txt [-o] result.txt**  
 -u 目标url，注意需要加上http/https  
