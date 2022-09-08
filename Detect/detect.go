@@ -120,6 +120,7 @@ func DetectDependency(target string)[]string{
 	//fmt.Println(findDependency)
 	if findDependency[0] == "" {
 		fmt.Println("["+target+"] :"+"[-] 报错探测未发现任何依赖库")
+		results = make([]string,1)
 		results[0] = ""
 	}else{
 		fmt.Println("["+target+"] :"+"[*] 发现依赖库如下")
