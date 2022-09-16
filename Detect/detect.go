@@ -164,10 +164,15 @@ func DnslogDetect(target string,payload string,session string) string{
 	}
 	httpReq.Header.Add("Content-Type", "application/json")
 	httpRsp, err := http.DefaultClient.Do(httpReq)
-	if err != nil {
-		err.Error()
+	if err != nil{
+		httpRsp = Utils.NetWorkErrHandle(http.DefaultClient,httpReq,err)
+		if httpRsp == nil{
+			fmt.Println("与dns平台网络不可达,请检查网络")
+			return Utils.NETWORK_NOT_ACCESS
+		}
 	}
 	defer httpRsp.Body.Close()
+
 	//fmt.Println(session)
 	time.Sleep(3*time.Second) // 等3秒钟，防止由于网络原因误报
 	//fmt.Println(payload+":"+ Utils.GetDnslogRecord(session))
