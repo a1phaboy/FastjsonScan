@@ -1,3 +1,4 @@
+![FastjsonScan](https://socialify.git.ci/a1phaboy/FastjsonScan/image?font=Source%20Code%20Pro&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light)
 # FastjsonScan
 A tool to fast detect fastjson‘s deserialize vuln
 
