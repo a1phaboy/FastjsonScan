@@ -93,5 +93,5 @@ https://github.com/iSafeBlue/fastjson-autotype-bypass-demo
 
 ## 0x03鸣谢
 非常感谢 [blue](https://github.com/iSafeBlue) 浅蓝师傅在kcon上的精彩分享  
-非常感谢 [hosch3n](https://github.com/hosch3n) 陈师傅的答疑解惑
+非常感谢 [hosch3n](https://github.com/hosch3n) 李师傅的答疑解惑
 
