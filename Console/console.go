@@ -49,6 +49,7 @@ func Start(options Utils.Option){
 	wg.Wait()
 
 	writeResults(options.Result,results)
+	fmt.Println("[*] 结果已保存至 " + options.Result)
 
 	//fmt.Println(results)
 }

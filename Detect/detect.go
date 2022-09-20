@@ -19,7 +19,7 @@ import (
 
 func DetectFastjson(url string) (bool,string){
 	fmt.Println("["+url+"] :"+"[+] 正在进行报错识别")
-	jsonType, _ := ErrDetectVersion(url)
+	jsonType := ErrDetectVersion(url,Utils.FS_ERR_DETECT)
 	if jsonType == "jackson" {
 		return false,Utils.NOT_FS
 	}
@@ -64,11 +64,13 @@ func DetectVersion(url string ) Utils.Result {
 			}
 			fmt.Println("[" + result.Url + "] :" + "[+] 正在进行版本探测")
 			payloads, session = Utils.DNS_DETECT_FACTORY()
-			if DnslogDetect(url, payloads.Dns_48, session) == "48" {
+			version := DnslogDetect(url, payloads.Dns_48, session)
+			if version == "48" {
 				result.Version = Utils.FJ_UNDER_48
 				return result
 			}
-			if DnslogDetect(url, payloads.Dns_68, session) == "68" {
+			version = DnslogDetect(url, payloads.Dns_68, session)
+			if version == "68" {
 				if result.AutoType {
 					result.Version = Utils.FJ_BEYOND_48
 					return result
@@ -76,14 +78,18 @@ func DetectVersion(url string ) Utils.Result {
 				result.Version = Utils.FJ_BETWEEN_48_68
 				return result
 			}
-			if DnslogDetect(url, payloads.Dns_80, session) == "80" {
+			version = DnslogDetect(url, payloads.Dns_80, session)
+			if version == "80" {
 				result.Version = Utils.FJ_BETWEEN_69_80
 				return result
 			}
-			if DnslogDetect(url, payloads.Dns_80, session) == "83" {
+			version = DnslogDetect(url, payloads.Dns_80, session)
+			if version == "83" {
 				result.Version = Utils.FS_BEYOND_80
 				return result
 			}
+			result.Version = version
+			return result
 		}else{
 			fmt.Println("客户端与dnslog平台网络不可达")
 			//内网测试场景  施工中
@@ -171,7 +177,17 @@ func DnslogDetect(target string,payload string,session string) string{
 			return Utils.NETWORK_NOT_ACCESS
 		}
 	}
-	defer httpRsp.Body.Close()
+	//defer httpRsp.Body.Close()
+	body, err := ioutil.ReadAll(httpRsp.Body)
+	if err != nil{
+		err.Error()
+	}
+	reg := regexp.MustCompile(`fastjson-version\s\d.\d.[0-9]+`)
+	var version string
+	version = reg.FindString(string(body))
+	if version != ""{
+		return version[17:]
+	}
 
 	//fmt.Println(session)
 	time.Sleep(3*time.Second) // 等3秒钟，防止由于网络原因误报
@@ -183,9 +199,9 @@ func DnslogDetect(target string,payload string,session string) string{
 *** 报错探测
 **/
 
-func ErrDetectVersion(target string) (string,bool){
+func ErrDetectVersion(target string,payload string) string{
 	var version string
-	reqBody := strings.NewReader(Utils.FS_ERR_DETECT)
+	reqBody := strings.NewReader(payload)
 	httpReq, err := http.NewRequest("POST", target, reqBody)
 	if err != nil {
 		err.Error()
@@ -196,7 +212,7 @@ func ErrDetectVersion(target string) (string,bool){
 		httpRsp = Utils.NetWorkErrHandle(http.DefaultClient,httpReq,err)
 		if httpRsp == nil{
 			fmt.Println("与"+target+"网络不可达,请检查网络")
-			return Utils.NETWORK_NOT_ACCESS,false
+			return Utils.NETWORK_NOT_ACCESS
 		}
 	}
 	defer httpRsp.Body.Close()
@@ -210,9 +226,9 @@ func ErrDetectVersion(target string) (string,bool){
 	if version == ""{
 		reg = regexp.MustCompile(`jackson`)
 		version = reg.FindString(string(body))
-		return version,false
+		return version
 	}else{
-		return version[17:],true
+		return version[17:]
 	}
 }
 

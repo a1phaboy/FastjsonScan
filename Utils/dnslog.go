@@ -56,7 +56,7 @@ func GetDnslogRecord(PHPSESSID string) string{
 	dns_83 := regexp.MustCompile(`83_.`)
 	//fmt.Println(string(body))
 	if string(body) == "[]"{
-		return string(body)
+		return ""
 	}else{
 		if dns_48.FindString(string(body)) != "" {
 			return "48"
