@@ -10,7 +10,7 @@ import (
 )
 
 /**
-***	doslog API
+***	dnslog API
 **/
 
 func GetDnslogUrl()	(string,string){
