@@ -152,7 +152,7 @@ func DetectAutoType(url string) bool{
 	var autoTypeStatus bool
 	payload := Utils.AUTOTYPE_DETECT_FACTORY(dnsurl)
 	record := DnslogDetect(url,payload,session)
-	if  record == "[]" || record == Utils.NETWORK_NOT_ACCESS{
+	if  record == "" || record == Utils.NETWORK_NOT_ACCESS{
 		fmt.Println("["+url+"] :"+"[-] 目标没有开启 AutoType")
 		autoTypeStatus = false
 	}else{
