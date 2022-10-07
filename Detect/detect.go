@@ -48,7 +48,7 @@ func DetectVersion(url string ) Utils.Result {
 	fmt.Println("["+result.Url+"] :"+"[+] 正在进行出网探测")
 	payload, session := Utils.NET_DETECT_FACTORY()
 	record := DnslogDetect(url, payload, session)
-	if record != "[]" {
+	if record != "" {
 		if record != Utils.NETWORK_NOT_ACCESS {
 			//出网
 			fmt.Println("[" + result.Url + "] :" + "[*] 目标可出网")

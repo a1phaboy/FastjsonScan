@@ -91,7 +91,7 @@ func writeResults(file string, results []Utils.Result ){
 		return
 	}
 	for _,v := range results{
-		if v.Type == "Fastjson" {
+		if v.Type == "Fastjson" && v.Version != "" {
 			info := Utils.SCAN_RESULTS_OUTPUT_FACTORY(v)
 			_, err = io.WriteString(f, info)
 		}
